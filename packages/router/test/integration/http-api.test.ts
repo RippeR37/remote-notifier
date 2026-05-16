@@ -4,6 +4,7 @@ import { NotificationHandler } from '../../src/handler/NotificationHandler';
 import { Configuration } from '../../src/config/Configuration';
 import { NotificationPresenter } from '../../src/presenter/NotificationPresenter';
 import { sendNotification, checkHealth, sendRaw } from '../helpers/http-client';
+import * as routerPackageJson from '../../package.json';
 
 describe('HTTP API Integration', () => {
   let server: NotificationServer;
@@ -35,7 +36,7 @@ describe('HTTP API Integration', () => {
       const { status, body } = await checkHealth(port);
       expect(status).toBe(200);
       expect(body.ok).toBe(true);
-      expect(body.version).toBe('1.0.0');
+      expect(body.version).toBe(routerPackageJson.version);
     });
 
     it('requires no authentication', async () => {

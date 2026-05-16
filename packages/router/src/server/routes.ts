@@ -1,8 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { NotificationHandler } from '../handler/NotificationHandler';
 import { validateToken, extractBearerToken } from './auth';
-
-const VERSION = '1.0.0';
+import * as routerPackageJson from '../../package.json';
 
 export class Router {
   constructor(
@@ -15,7 +14,7 @@ export class Router {
     const { method, url } = req;
 
     if (method === 'GET' && url === '/health') {
-      return this.sendJson(res, 200, { ok: true, version: VERSION });
+      return this.sendJson(res, 200, { ok: true, version: routerPackageJson.version });
     }
 
     if (url === '/notify') {
