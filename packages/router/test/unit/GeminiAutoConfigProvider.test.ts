@@ -1,22 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as os from 'os';
+import * as path from 'path';
 import { window } from 'vscode';
 import { GeminiAutoConfigProvider } from '../../src/autoconfig/GeminiAutoConfigProvider';
 
 vi.mock('../../src/installer/CodeNotifyScriptInstaller', () => ({
-  getBinDir: () => '/home/testuser/.local/bin',
+  getBinDir: () => path.join(os.homedir(), '.local', 'bin'),
   SCRIPT_NAME: 'code-notify',
   CodeNotifyScriptInstaller: vi.fn(),
 }));
 
-vi.mock('os', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('os')>();
-  return { ...actual, homedir: () => '/home/testuser' };
-});
-
 describe('GeminiAutoConfigProvider', () => {
   let provider: GeminiAutoConfigProvider;
-  const settingsPath = '/home/testuser/.gemini/settings.json';
+  const settingsPath = path.join(os.homedir(), '.gemini', 'settings.json');
 
   beforeEach(() => {
     vi.clearAllMocks();

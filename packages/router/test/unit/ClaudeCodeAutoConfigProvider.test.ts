@@ -1,16 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs/promises';
+import * as path from 'path';
+import * as os from 'os';
 import { window } from 'vscode';
 
 vi.mock('fs/promises');
-vi.mock('os', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('os')>();
-  return { ...actual, homedir: () => '/home/testuser' };
-});
 
 const mockInstall = vi.fn().mockResolvedValue(undefined);
 vi.mock('../../src/installer/CodeNotifyScriptInstaller', () => ({
-  getBinDir: () => '/home/testuser/.local/bin',
+  getBinDir: () => path.join(os.homedir(), '.local', 'bin'),
   SCRIPT_NAME: 'code-notify',
   CodeNotifyScriptInstaller: vi.fn().mockImplementation(function () {
     return {
@@ -63,7 +61,7 @@ describe('ClaudeCodeAutoConfigProvider', () => {
   });
 
   describe('processConfigs', () => {
-    const settingsPath = '/home/testuser/.claude/settings.json';
+    const settingsPath = path.join(os.homedir(), '.claude', 'settings.json');
 
     it('adds hooks to empty settings', async () => {
       const loaded = new Map([[settingsPath, '{}']]);

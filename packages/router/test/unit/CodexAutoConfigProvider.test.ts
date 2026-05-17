@@ -1,24 +1,19 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as os from 'os';
+import * as path from 'path';
 import { window } from 'vscode';
+import { CodexAutoConfigProvider } from '../../src/autoconfig/CodexAutoConfigProvider';
 
 vi.mock('../../src/installer/CodeNotifyScriptInstaller', () => ({
-  getBinDir: () => '/home/testuser/.local/bin',
+  getBinDir: () => path.join(os.homedir(), '.local', 'bin'),
   SCRIPT_NAME: 'code-notify',
   CodeNotifyScriptInstaller: vi.fn(),
 }));
 
-import { CodexAutoConfigProvider } from '../../src/autoconfig/CodexAutoConfigProvider';
-
-vi.mock('os', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('os')>();
-  return { ...actual, homedir: () => '/home/testuser' };
-});
-
 describe('CodexAutoConfigProvider', () => {
   let provider: CodexAutoConfigProvider;
-  const hooksPath = '/home/testuser/.codex/hooks.json';
-  const tomlPath = '/home/testuser/.codex/config.toml';
+  const hooksPath = path.join(os.homedir(), '.codex', 'hooks.json');
+  const tomlPath = path.join(os.homedir(), '.codex', 'config.toml');
 
   beforeEach(() => {
     vi.clearAllMocks();
