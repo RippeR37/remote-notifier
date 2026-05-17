@@ -103,25 +103,27 @@ export class GeminiAutoConfigProvider extends BaseAutoConfigProvider {
   buildHooks(platform: Platform, useJq: boolean): Record<string, HookEntry[]> {
     const cmdPath = this.getCommandPath(platform);
 
-    const notificationCommand = useJq
-      ? `msg=$(jq -r '.message // "Has a question for you"' 2>/dev/null) && ${cmdPath} -i ICON_GEMINI 'Gemini' "$msg" 2>/dev/null || true`
-      : `${cmdPath} -i ICON_GEMINI 'Gemini' 'Has a question for you' 2>/dev/null || true`;
+    const cmdSuffix = platform === 'windows' ? `2>nul` : `2>/dev/null || true`;
 
-    const sessionEndCommand =
+    const notificationCommand = useJq
+      ? `msg=$(jq -r '.message // "Has a question for you"' 2>/dev/null) && ${cmdPath} -i ICON_GEMINI 'Gemini' "$msg" ${cmdSuffix}`
+      : `${cmdPath} -i ICON_GEMINI 'Gemini' 'Has a question for you' ${cmdSuffix}`;
+
+    const afterAgentCommand =
       platform === 'windows'
-        ? `${cmdPath} -i ICON_GEMINI "Gemini" "Session finished" 2>nul`
-        : `${cmdPath} -i ICON_GEMINI 'Gemini' 'Session finished' 2>/dev/null || true`;
+        ? `${cmdPath} -i ICON_GEMINI "Gemini" "Session finished" ${cmdSuffix}`
+        : `${cmdPath} -i ICON_GEMINI 'Gemini' 'Session finished' ${cmdSuffix}`;
 
     return {
-      SessionEnd: [
+      AfterAgent: [
         {
           matcher: '*',
           hooks: [
             {
-              name: 'remote-notifier-session-end',
+              name: 'remote-notifier-finished',
               type: 'command',
-              command: sessionEndCommand,
-              timeout: 5,
+              command: afterAgentCommand,
+              timeout: 5000,
             },
           ],
         },
@@ -134,7 +136,7 @@ export class GeminiAutoConfigProvider extends BaseAutoConfigProvider {
               name: 'remote-notifier-notification',
               type: 'command',
               command: notificationCommand,
-              timeout: 5,
+              timeout: 5000,
             },
           ],
         },

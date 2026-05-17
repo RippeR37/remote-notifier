@@ -29,7 +29,7 @@ describe('GeminiAutoConfigProvider', () => {
       expect(result!.stats.updated).toBe(1); // general.enableNotifications
 
       const parsed = JSON.parse(result!.modifiedFiles.get(settingsPath)!);
-      expect(parsed.hooks.SessionEnd).toHaveLength(1);
+      expect(parsed.hooks.AfterAgent).toHaveLength(1);
       expect(parsed.hooks.Notification).toHaveLength(1);
       expect(parsed.general.enableNotifications).toBe(false);
     });
@@ -37,7 +37,7 @@ describe('GeminiAutoConfigProvider', () => {
     it('updates existing hooks', async () => {
       const existing = {
         hooks: {
-          SessionEnd: [
+          AfterAgent: [
             {
               matcher: '*',
               hooks: [{ name: 'old', type: 'command', command: 'code-notify old', timeout: 1 }],
@@ -51,7 +51,7 @@ describe('GeminiAutoConfigProvider', () => {
 
       expect(result!.stats.updated).toBe(1); // hook update
       const parsed = JSON.parse(result!.modifiedFiles.get(settingsPath)!);
-      expect(parsed.hooks.SessionEnd[0].hooks[0].timeout).toBe(5);
+      expect(parsed.hooks.AfterAgent[0].hooks[0].timeout).toBe(5000);
     });
 
     it('preserves other settings', async () => {
