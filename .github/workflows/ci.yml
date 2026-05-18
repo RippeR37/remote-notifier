@@ -85,7 +85,12 @@ jobs:
 
       - name: Prepare upload artifact name
         id: prep-artifact-name
-        run: echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "sha_short=${{ github.event.pull_request.head.sha::7 }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload VSIX
         uses: actions/upload-artifact@v7
