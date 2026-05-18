@@ -87,7 +87,7 @@ jobs:
         id: prep-artifact-name
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "sha_short=${{ github.event.pull_request.head.sha }}" | cut -c1-7 >> "$GITHUB_OUTPUT"
+            echo "sha_short=${{ github.event.pull_request.head.sha }}" | cut -c1-17 >> "$GITHUB_OUTPUT"
           else
             echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
           fi
