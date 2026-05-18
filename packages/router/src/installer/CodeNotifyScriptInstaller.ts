@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import { fileExists } from 'remote-notifier-shared';
 
 import unixScript from './code-notify.sh';
 import windowsScript from './code-notify.cmd';
@@ -33,20 +34,39 @@ export class CodeNotifyScriptInstaller {
     const fileName = isWindows ? `${SCRIPT_NAME}.cmd` : SCRIPT_NAME;
     const scriptPath = path.join(this.binDir, fileName);
 
-    try {
-      await fs.access(scriptPath);
-      // Also check if it's on PATH
-      const dirs = (process.env.PATH ?? '').split(path.delimiter);
-      return dirs.includes(this.binDir);
-    } catch {
+    if (!(await fileExists(scriptPath))) {
       return false;
+    }
+
+    // Also check if it's on PATH
+    const dirs = (process.env.PATH ?? '').split(path.delimiter);
+    return dirs.includes(this.binDir);
+  }
+
+  async needsUpdate(): Promise<boolean> {
+    const isWindows = process.platform === 'win32';
+    const fileName = isWindows ? `${SCRIPT_NAME}.cmd` : SCRIPT_NAME;
+    const scriptPath = path.join(this.binDir, fileName);
+
+    try {
+      const installedContent = await fs.readFile(scriptPath, 'utf-8');
+      const bundledContent = isWindows ? windowsScript : unixScript;
+
+      // Normalize line endings for comparison
+      const normalize = (str: string) => str.replace(/\r\n/g, '\n').trim();
+
+      return normalize(installedContent) !== normalize(bundledContent);
+    } catch {
+      // If we can't read it, assume it needs "installation" (which is an update)
+      return true;
     }
   }
 
-  async install(silent: boolean = false): Promise<void> {
+  async install(silent: boolean = false, isUpdate: boolean = false): Promise<void> {
     const isWindows = process.platform === 'win32';
+    const action = isUpdate ? 'Updating' : 'Installing';
     this.log?.appendLine(
-      `[CodeNotifyScriptInstaller] Installing ${SCRIPT_NAME} to ${this.binDir} (platform: ${process.platform})`,
+      `[CodeNotifyScriptInstaller] ${action} ${SCRIPT_NAME} to ${this.binDir} (platform: ${process.platform})`,
     );
 
     await fs.mkdir(this.binDir, { recursive: true });
@@ -60,6 +80,15 @@ export class CodeNotifyScriptInstaller {
 
     const pathNote = await this.ensureOnPath(isWindows);
 
+    if (isUpdate) {
+      if (!silent) {
+        vscode.window.showInformationMessage(
+          `Remote Notifier: Updated \`${SCRIPT_NAME}\` to the latest version.`,
+        );
+      }
+      return;
+    }
+
     const messages = [`Installed \`${SCRIPT_NAME}\` to ${this.binDir}.`];
     if (pathNote) {
       messages.push(pathNote);
@@ -67,7 +96,7 @@ export class CodeNotifyScriptInstaller {
     messages.push('Usage: `code-notify "Title" "Message"`');
 
     if (!silent) {
-      vscode.window.showInformationMessage(messages.join(' '));
+      vscode.window.showInformationMessage(messages.join('\n'));
     }
   }
 

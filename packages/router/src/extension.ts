@@ -44,18 +44,24 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   const statusBar = new StatusBar(server.port);
 
-  // Auto-install script if missing
+  // Auto-install or update script
   const installer = new CodeNotifyScriptInstaller(log);
   installer
     .isInstalled()
-    .then((installed) => {
+    .then(async (installed) => {
       if (!installed) {
         log.appendLine('[Router] code-notify script not found, installing...');
         return installer.install(true);
+      } else {
+        const needsUpdate = await installer.needsUpdate();
+        if (needsUpdate) {
+          log.appendLine('[Router] code-notify script is outdated, updating...');
+          return installer.install(true, true);
+        }
       }
     })
     .catch((err) => {
-      log.appendLine(`[Router] Failed to auto-install script: ${err}`);
+      log.appendLine(`[Router] Failed to auto-install or update script: ${err}`);
     });
 
   context.subscriptions.push(
