@@ -1,6 +1,9 @@
-import { NotificationPayload, NotificationResponse } from 'remote-notifier-shared';
+import {
+  NotificationPayload,
+  NotificationResponse,
+  NotificationPresenter,
+} from 'remote-notifier-shared';
 import { randomBytes } from 'crypto';
-import { NotificationPresenter } from '../presenter/NotificationPresenter';
 import { Configuration } from '../config/Configuration';
 
 const MAX_MESSAGE_LENGTH = 1000;

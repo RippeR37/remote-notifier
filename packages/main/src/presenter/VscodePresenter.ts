@@ -5,8 +5,6 @@ import {
   NotificationPresenter,
 } from 'remote-notifier-shared';
 
-export { NotificationPresenter } from 'remote-notifier-shared';
-
 export class VscodePresenter implements NotificationPresenter {
   constructor(private readonly log?: vscode.OutputChannel) {}
 

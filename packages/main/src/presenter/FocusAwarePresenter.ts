@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { NotificationPayload } from 'remote-notifier-shared';
-import { NotificationPresenter } from './VscodePresenter';
+import { NotificationPayload, NotificationPresenter } from 'remote-notifier-shared';
 
 export type SystemNotificationMode = 'auto' | 'always' | 'never';
 

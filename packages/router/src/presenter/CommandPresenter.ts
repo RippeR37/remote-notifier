@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
-import { NotificationPayload, COMMAND_SHOW_NOTIFICATION } from 'remote-notifier-shared';
-import { NotificationPresenter } from './NotificationPresenter';
+import {
+  NotificationPayload,
+  COMMAND_SHOW_NOTIFICATION,
+  NotificationPresenter,
+} from 'remote-notifier-shared';
 
 export class CommandPresenter implements NotificationPresenter {
   constructor(

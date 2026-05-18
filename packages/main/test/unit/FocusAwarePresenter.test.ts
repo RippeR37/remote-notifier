@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { window, setMockConfig, clearMockConfig } from 'vscode';
+import { NotificationPresenter } from 'remote-notifier-shared';
 import { FocusAwarePresenter } from '../../src/presenter/FocusAwarePresenter';
-import { NotificationPresenter } from '../../src/presenter/VscodePresenter';
 
 describe('FocusAwarePresenter', () => {
   let focusedPresenter: NotificationPresenter;

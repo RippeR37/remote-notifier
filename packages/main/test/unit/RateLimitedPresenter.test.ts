@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { window } from 'vscode';
+import { NotificationPresenter } from 'remote-notifier-shared';
 import { RateLimitedPresenter } from '../../src/presenter/RateLimitedPresenter';
-import { NotificationPresenter } from '../../src/presenter/VscodePresenter';
 
 describe('RateLimitedPresenter', () => {
   let inner: NotificationPresenter;
