@@ -24,18 +24,22 @@ export class SystemPresenter implements NotificationPresenter {
     const config = vscode.workspace.getConfiguration('remoteNotifier');
     const iconStyle = config.get<string>('notificationIcon', 'transparent');
     const soundEnabled = config.get<boolean>('notificationSound', true);
-    const customSoundPath = config.get<string>('notificationSoundPath', '');
+    const globalSoundPath = config.get<string>('notificationSoundPath', '');
     const customPlayer = config.get<string>('notificationSoundPlayer', '');
-    const mappings = config.get<Record<string, string>>('iconMappings', {});
+    const iconMappings = config.get<Record<string, string>>('iconMappings', {});
+    const soundMappings = config.get<Record<string, string>>('soundMappings', {});
+
     const iconPath =
-      (payload.icon && mappings[payload.icon]) || ICONS[iconStyle] || ICONS.transparent;
+      (payload.icon && iconMappings[payload.icon]) || ICONS[iconStyle] || ICONS.transparent;
+
+    const resolvedSoundPath = (payload.sound && soundMappings[payload.sound]) || globalSoundPath;
 
     let useNativeSound = false;
 
     if (soundEnabled) {
-      if (customSoundPath) {
-        // Play custom sound
-        this.soundPlayer.play(customSoundPath, customPlayer);
+      if (resolvedSoundPath) {
+        // Play mapped or global custom sound
+        this.soundPlayer.play(resolvedSoundPath, customPlayer);
       } else if (process.platform === 'linux') {
         // On Linux, use bundled sound if enabled and no custom path
         this.soundPlayer.play(BUNDLED_SOUND, customPlayer);
