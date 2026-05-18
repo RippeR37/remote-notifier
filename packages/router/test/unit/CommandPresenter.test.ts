@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { commands } from 'vscode';
+import { COMMAND_SHOW_NOTIFICATION, NotificationPresenter } from 'remote-notifier-shared';
 import { CommandPresenter } from '../../src/presenter/CommandPresenter';
-import { NotificationPresenter } from '../../src/presenter/NotificationPresenter';
-import { COMMAND_SHOW_NOTIFICATION } from 'remote-notifier-shared';
 
 describe('CommandPresenter', () => {
   let fallback: NotificationPresenter;

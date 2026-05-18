@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
-import { NotificationPayload, NotificationLevel } from 'remote-notifier-shared';
-import { NotificationPresenter } from './NotificationPresenter';
+import {
+  NotificationPayload,
+  NotificationLevel,
+  NotificationPresenter,
+} from 'remote-notifier-shared';
 
 export class VscodePresenter implements NotificationPresenter {
   async present(payload: NotificationPayload): Promise<string | undefined> {

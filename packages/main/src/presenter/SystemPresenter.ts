@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as notifier from 'node-notifier';
-import { NotificationPayload, fileExists } from 'remote-notifier-shared';
-import { NotificationPresenter } from './VscodePresenter';
+import { NotificationPayload, NotificationPresenter, fileExists } from 'remote-notifier-shared';
 import { SoundPlayer } from './SoundPlayer';
 
 const ICONS: Record<string, string> = {

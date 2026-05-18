@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { NotificationPayload } from 'remote-notifier-shared';
-import { NotificationPresenter } from './VscodePresenter';
+import { NotificationPayload, NotificationPresenter } from 'remote-notifier-shared';
 
 const DEFAULT_MAX_NOTIFICATIONS = 5;
 const DEFAULT_WINDOW_MS = 15_000;

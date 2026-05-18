@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { NotificationPresenter } from 'remote-notifier-shared';
 import { NotificationHandler } from '../../src/handler/NotificationHandler';
-import { NotificationPresenter } from '../../src/presenter/NotificationPresenter';
 import { Configuration } from '../../src/config/Configuration';
 
 describe('NotificationHandler', () => {

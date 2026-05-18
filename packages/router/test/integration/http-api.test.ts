@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { NotificationPresenter } from 'remote-notifier-shared';
 import { NotificationServer } from '../../src/server/NotificationServer';
 import { NotificationHandler } from '../../src/handler/NotificationHandler';
 import { Configuration } from '../../src/config/Configuration';
-import { NotificationPresenter } from '../../src/presenter/NotificationPresenter';
 import { sendNotification, checkHealth, sendRaw } from '../helpers/http-client';
 import * as routerPackageJson from '../../package.json';
 
