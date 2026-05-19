@@ -32,7 +32,7 @@ progress of your work regardless of where the work is done.
 
 **Remote Notifier** consists of two VS Code extensions:
 
-### 🔔 Remote Notifier
+### 🔔 [Remote Notifier](https://marketplace.visualstudio.com/items?itemName=ddyndo.remote-notifier)
 
 - Main extension
 - Runs on your local machine (UI side of the VS Code)
@@ -41,7 +41,7 @@ progress of your work regardless of where the work is done.
 - Receives notifications from the Router extension
 - Displays them as either in-app or system level notifications
 
-### 🔀 Remote Notifier (Router)
+### 🔀 [Remote Notifier (Router)](https://marketplace.visualstudio.com/items?itemName=ddyndo.remote-notifier-router)
 
 - Helper extension
 - Runs where your workspace is (local or remote: SSH, WSL, Docker, ...)
@@ -66,47 +66,46 @@ configuration to work!
 
 ### Install extensions
 
-The recommended way is to:
+1. Install the [**Remote Notifier**](https://marketplace.visualstudio.com/items?itemName=ddyndo.remote-notifier)
+   extension.
+2. The extension will detect if the
+   [**Remote Notifier (Router)**](https://marketplace.visualstudio.com/items?itemName=ddyndo.remote-notifier-router)
+   helper extension is missing in your current workspace and suggest to install
+   it - simply click <kbd>Install in ...</kbd> button to install it.
 
-1. Install the main `Remote Notifier` extension from its
-   [marketplace page](https://marketplace.visualstudio.com/items?itemName=ddyndo.remote-notifier)
-2. Install helper `Remote Notifier (Router)` extension whenever prompted by the
-   main extension by clicking `Install in ...` button from the notification
-   - Or install it manually from its
-     [marketplace page](https://marketplace.visualstudio.com/items?itemName=ddyndo.remote-notifier-router)
+Once installed, you are ready to configure your scripts and tools manually with
+the [`code-notify` helper script](#code-notify-cli) or use built-in
+[automatic configuration](#automatic-configuration) for supported tools! 🎉
 
-Alternatively, you can also download latest version from the extension's
+> [!IMPORTANT]
+> The Router helper extension needs to be installed on your current workspace
+> (either local or remote) to be able to use it. If you use multiple separate
+> workspaces (remote machines, WSL systems, containers) you will have to install
+> it on each of them separately to use it there.
+>
+> It is recommended to watch for suggestions from the main extension and install
+> the Router extension whenever prompted.
+
+### Manual installation
+
+Alternatively, you can also download latest version of both extensions from the
 [GitHub project page](https://github.com/RippeR37/remote-notifier/releases)
-in the form of two `.vsix` files that you can install by:
+and install them manually by:
 
 1. Opening Command Palette (e.g. <kbd>F1</kbd>)
 2. Choosing the `Extensions: Install from VSIX...` command and selecting the
    downloaded files
-
-Once the extensions are installed you should be ready to trigger notifications
-from your workspace scripts and tools with `code-notify` helper script! 🎉
-
-> [!IMPORTANT]
-> To use this extension in remote workspaces (e.g. via SSH) the Router helper
-> extension needs to be installed on each remote workspace separately.
->
-> It is recommended to watch for suggestions from the main extension and install
-> the Router extension whenever prompted. Alternatively, if you've already
-> installed it in your local workspace, you can also install it manually by
-> navigating to the `Extensions` view, scrolling down to the
-> `Remote Notifier (Router)` entry and clicking <kbd>Install in SSH: ...</kbd>
-> button next to it.
 
 ### `code-notify` CLI
 
 The easiest way to send notifications is through the **`code-notify` CLI**
 convenience script.
 
-The script should be installed automatically if it's not already present in the
-workspace whenever you open a workspace with the Router extension installed.
+The script should be installed automatically (if it's not already present in the
+workspace) whenever you open a workspace with the Router extension installed.
 
 If for some reason the convenience script is not present in your workspace you
-can also request trigger its installation manually by this:
+can also manually trigger its installation:
 
 1. Open command palette (e.g. <kbd>F1</kbd>)
 2. Find and choose:
@@ -131,7 +130,7 @@ code-notify -d app "Build" "Done"                # hint presentation as VS Code 
 > it doesn't. You can configure this behavior.
 
 > [!TIP]
-> You can use this script from any context on your workspace, it doesn't have to
+> You can use this script from any context in your workspace, it doesn't have to
 > be from VS Code integrated terminal! You can connect to your remote machine
 > separately from VS Code instance and still use it to trigger notifications
 > for your local machine.
@@ -157,14 +156,17 @@ To automatically configure a tool simply:
 1. Open Command Palette (e.g. <kbd>F1</kbd>)
 2. Select
    `Remote Notifier: Auto-configure notifications in current workspace for...`
-3. Select a tool you want to auto-configure
+3. Select tool you want to auto-configure
+
+These auto-configurations simply update your tool's config files and specify
+hooks that invoke `code-notify` script with proper messages for given events.
 
 > [!IMPORTANT]
 > This will configure your tool only in the current workspace. If you switch to
 > a different one (e.g. different remote machine) you will have to configure it
-> again.
+> separately.
 
-### Triggering notifications manually
+### Triggering notifications manually (not recommended)
 
 If you don't want to use provided `code-notify` script, you can simply make a
 HTTP POST requests to `127.0.0.1` on a specific port.
@@ -207,6 +209,20 @@ If the key isn't found in the mappings, the default icon will be used.
 > [!CAUTION]
 > Support for this feature is OS-dependent and may not work on some systems.
 
+### Custom sounds
+
+By default system notifications use default bell sound (OS-specific) for
+every notification. You can disable or specify a custom sound cue in the
+[extension settings](#configuration).
+
+Furthermore, you can also specify a mapping between sound cue keys and paths
+(similarly to icons above) and trigger a specific sound cue for by a specific
+notification with `-s <CUE_KEY>` like that:
+
+```bash
+code-notify -s CUE_SUCCESS "CI" "Tests passed"
+```
+
 ### Display hints
 
 Scripts can suggest how a notification should be displayed by passing
@@ -228,12 +244,13 @@ preference takes precedence.
 
 If you have any issues you should:
 
-1. Verify that both extensions are installed in current workspace
-2. Use `Remote Notifier: Test <...> notifications` helper commands to verify if
+1. Verify that **both** extensions are installed in current workspace
+2. Use `Remote Notifier: Test <...> notifications` helper commands to check if
    one or both of the presentation systems work or not
 3. Check configuration of app notifications in your system settings
 4. Open `Output` panel (`View` -> `Output`), select `Remote Notifier` log
    sources and see if there are any errors there that may narrow it down
+   - Each extension will have its own log source, so be sure to check both
 
 ## Configuration
 
@@ -324,7 +341,7 @@ packages/
   router/     Workspace extension (HTTP server, auth, session management, script & configs installer)
 shared/       Shared TypeScript types and constants
 test/e2e/     End-to-end tests (e.g. for the code-notify helper)
-assets/       Extension icons
+assets/       Extension icons, bundled sound cue
 ```
 
 ## License
